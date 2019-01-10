@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.pixelart.shoppingappexample.model.Customer
 
-class SharedPreferencesManager private constructor(private val context: Context){
+enum class PrefsManager constructor(private var context: Context){
+    INSTANCE;
+
+    private constructor()
 
     fun onLogin(customer: Customer): Boolean{
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -26,7 +29,7 @@ class SharedPreferencesManager private constructor(private val context: Context)
         return false
     }
 
-    fun getCustomer(): Customer{
+    fun getCustomer(): Customer {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return Customer(
             id = sharedPreferences.getInt(KEY_USER_ID, 0),
@@ -46,18 +49,7 @@ class SharedPreferencesManager private constructor(private val context: Context)
         return true
     }
 
-    companion object {
-        @JvmStatic
-        private var INSTANCE: SharedPreferencesManager? = null
-
-        @JvmStatic
-        @Synchronized
-        fun getInstance(context: Context): SharedPreferencesManager{
-            if (INSTANCE == null)
-            {
-                INSTANCE = SharedPreferencesManager(context)
-            }
-            return INSTANCE as SharedPreferencesManager
-        }
+    fun setContext(ctx: Context){
+        context = ctx
     }
 }

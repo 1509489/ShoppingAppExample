@@ -1,28 +1,43 @@
 package com.pixelart.shoppingappexample.ui.homescreen
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.pixelart.shoppingappexample.R
+import com.pixelart.shoppingappexample.common.PrefsManager
+import com.pixelart.shoppingappexample.ui.homescreen.fragment.HomeFragment
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.nav_header_home.view.*
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private val prefsManager = PrefsManager.INSTANCE
+
+    private lateinit var homeFragment: HomeFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
+        prefsManager.setContext(this)
+        val customer = prefsManager.getCustomer()
+
+        val headerView = nav_view.getHeaderView(0)
+
+        headerView.tvName_NavHeader.text = "Hi, ${customer.firstname}"
+        headerView.tvEmail_NavHeader.text = customer.email
+
+
+
+        homeFragment = HomeFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.home_content, homeFragment)
+            .commit()
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -51,9 +66,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

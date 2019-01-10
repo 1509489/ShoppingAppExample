@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.pixelart.shoppingappexample.R
+import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.common.SharedPreferencesManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
@@ -22,11 +23,13 @@ import okhttp3.ResponseBody
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var remoteService: RemoteService
+    private val prefsManager = PrefsManager.INSTANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        prefsManager.setContext(this)
         remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
     }
 
@@ -55,8 +58,8 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this@RegisterActivity, t.message, Toast.LENGTH_SHORT).show()
                     if (t.message == "Registration success"){
                         finish()
-                        SharedPreferencesManager.getInstance(this@RegisterActivity)
-                            .onLogin(t)
+                        //SharedPreferencesManager.getInstance(this@RegisterActivity).onLogin(t)
+                        prefsManager.onLogin(t)
                         startActivity(Intent(this@RegisterActivity, HomeActivity::class.java))
                     }
                 }

@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -62,4 +63,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
 
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
+}
+androidExtensions {
+    experimental = true
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.pixelart.shoppingappexample.R
+import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.common.SharedPreferencesManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
@@ -21,12 +22,15 @@ import okhttp3.ResponseBody
 
 class LoginActivity : AppCompatActivity(){
     private lateinit var remoteService: RemoteService
+    private val prefsManager = PrefsManager.INSTANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if (SharedPreferencesManager.getInstance(this).isLoggedIn()){
+        prefsManager.setContext(this)
+
+        if (prefsManager.isLoggedIn()){
             finish()
             startActivity(Intent(this, HomeActivity::class.java))
         }
@@ -40,7 +44,6 @@ class LoginActivity : AppCompatActivity(){
     fun onClick(v: View) {
         val userName = etUsername.text.toString()
         val password = etPass.text.toString()
-        var canLogin = ""
 
         remoteService.login(userName, password)
             .subscribeOn(Schedulers.io())
@@ -57,8 +60,8 @@ class LoginActivity : AppCompatActivity(){
                 override fun onNext(t: Customer) {
                     if (t.message == "Login successful"){
                         finish()
-                        SharedPreferencesManager.getInstance(this@LoginActivity)
-                            .onLogin(t)
+                        prefsManager.onLogin(t)
+                        //SharedPreferencesManager.getInstance(this@LoginActivity).onLogin(t)
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                     }
 
@@ -68,9 +71,5 @@ class LoginActivity : AppCompatActivity(){
                     Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_SHORT).show()
                 }
             })
-
-        if(canLogin.contains("Login successful", false)){
-            Toast.makeText(this@LoginActivity, "Can Login: $canLogin", Toast.LENGTH_SHORT).show()
-        }
     }
 }
