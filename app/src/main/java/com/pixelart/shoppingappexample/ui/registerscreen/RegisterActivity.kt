@@ -7,9 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.pixelart.shoppingappexample.R
+import com.pixelart.shoppingappexample.common.SharedPreferencesManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
+import com.pixelart.shoppingappexample.ui.homescreen.HomeActivity
 import com.pixelart.shoppingappexample.ui.loginscreen.LoginActivity
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -51,6 +53,12 @@ class RegisterActivity : AppCompatActivity() {
 
                 override fun onNext(t: Customer) {
                     Toast.makeText(this@RegisterActivity, t.message, Toast.LENGTH_SHORT).show()
+                    if (t.message == "Registration success"){
+                        finish()
+                        SharedPreferencesManager.getInstance(this@RegisterActivity)
+                            .onLogin(t)
+                        startActivity(Intent(this@RegisterActivity, HomeActivity::class.java))
+                    }
                 }
 
                 override fun onError(e: Throwable) {
