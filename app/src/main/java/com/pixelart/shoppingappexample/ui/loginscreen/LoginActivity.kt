@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.pixelart.shoppingappexample.R
+import com.pixelart.shoppingappexample.common.SharedPreferencesManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
@@ -24,6 +25,11 @@ class LoginActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        if (SharedPreferencesManager.getInstance(this).isLoggedIn()){
+            finish()
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
 
         remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
         tvRegister.setOnClickListener {
@@ -49,13 +55,13 @@ class LoginActivity : AppCompatActivity(){
                 }
 
                 override fun onNext(t: Customer) {
-                    tvDisplay.text = "Error: ${t.error}, Message: ${t.message}, \n${t.firstname}, ${t.lastname}, \n${t.username}, \n${t.email}, \n${t.phonenumber} "
-                    Toast.makeText(this@LoginActivity, t.message, Toast.LENGTH_SHORT).show()
-                    canLogin = t.message.toString()
-
-                    if (t.message == "Login successful")
+                    if (t.message == "Login successful"){
+                        finish()
+                        SharedPreferencesManager.getInstance(this@LoginActivity)
+                            .onLogin(t)
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
-                    finish()
+                    }
+
                 }
 
                 override fun onError(e: Throwable) {
