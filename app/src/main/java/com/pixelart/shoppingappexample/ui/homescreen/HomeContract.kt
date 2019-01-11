@@ -12,5 +12,6 @@ interface HomeContract{
 
     interface Presenter: BasePresenter {
         fun getFeaturedProducts()
+        fun dataLoaded():Boolean
     }
 }

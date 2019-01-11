@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ui.homescreen.HomeActivity"
+                android:name=".ui.MainActivity"
                 android:label="@string/title_activity_home"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>

@@ -8,9 +8,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class HomePresenter(private val view: HomeContract.View): HomeContract.Presenter {
+class HomePresenter(private val view: HomeContract.View):
+    HomeContract.Presenter {
 
     private val remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
+    private var isLoaded = false
 
     override fun getFeaturedProducts() {
         remoteService.getFeaturedProducts()
@@ -22,12 +24,15 @@ class HomePresenter(private val view: HomeContract.View): HomeContract.Presenter
                 }
 
                 override fun onSubscribe(d: Disposable) {
-
+                    isLoaded = true
                 }
 
                 override fun onError(e: Throwable) {
                     view.showError("Error ${e.message}")
+                    e.printStackTrace()
                 }
             })
     }
+
+    override fun dataLoaded(): Boolean = isLoaded
 }

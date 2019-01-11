@@ -8,18 +8,16 @@ import android.view.View
 import android.widget.Toast
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.common.PrefsManager
-import com.pixelart.shoppingappexample.common.SharedPreferencesManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
-import com.pixelart.shoppingappexample.ui.homescreen.HomeActivity
+import com.pixelart.shoppingappexample.ui.MainActivity
 import com.pixelart.shoppingappexample.ui.loginscreen.LoginActivity
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_register.*
-import okhttp3.ResponseBody
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var remoteService: RemoteService
@@ -60,7 +58,7 @@ class RegisterActivity : AppCompatActivity() {
                         finish()
                         //SharedPreferencesManager.getInstance(this@RegisterActivity).onLogin(t)
                         prefsManager.onLogin(t)
-                        startActivity(Intent(this@RegisterActivity, HomeActivity::class.java))
+                        startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
                     }
                 }
 
