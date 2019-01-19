@@ -2,7 +2,6 @@ package com.pixelart.shoppingappexample.remote
 
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.model.FeaturedProducts
-import com.pixelart.shoppingappexample.model.Product
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.Field

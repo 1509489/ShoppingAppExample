@@ -2,7 +2,6 @@ package com.pixelart.shoppingappexample.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -11,14 +10,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.common.PrefsManager
-import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.ui.drinkscreen.DrinksFragment
 import com.pixelart.shoppingappexample.ui.foodscreen.FoodsFragment
 import com.pixelart.shoppingappexample.ui.homescreen.HomeFragment
 import com.pixelart.shoppingappexample.ui.loginscreen.LoginActivity
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.app_bar_home.*
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_home.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -30,10 +27,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        prefsManager.setContext(this)
+        prefsManager.setContext(this.application)
         val customer = prefsManager.getCustomer()
 
         val headerView = nav_view.getHeaderView(0)

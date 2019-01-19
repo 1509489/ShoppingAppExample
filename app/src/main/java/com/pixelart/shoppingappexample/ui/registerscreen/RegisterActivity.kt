@@ -11,61 +11,55 @@ import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
-import com.pixelart.shoppingappexample.ui.MainActivity
 import com.pixelart.shoppingappexample.ui.loginscreen.LoginActivity
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     private lateinit var remoteService: RemoteService
+    private lateinit var presenter: RegisterPresenter
     private val prefsManager = PrefsManager.INSTANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        prefsManager.setContext(this)
         remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
+        presenter = RegisterPresenter(remoteService, this)
+        prefsManager.setContext(this.application)
+    }
+
+    override fun showHideLoadingIndicator(isLoading: Boolean) {
+
+    }
+
+    override fun onRegisterSuccess(customer: Customer) {
+        if (customer.message == "Registration success"){
+            finish()
+            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+        }
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
     }
 
     fun registerUser(view: View){
+        when(view.id){
+            R.id.btnRegister ->{
+                val firstName = etFirstName.text.toString()
+                val lastName = etLastName.text.toString()
+                val userName = etUserName.text.toString()
+                val email = etEmail.text.toString()
+                val password = etPassword.text.toString()
+                val phoneNumber = etPhoneNumber.text.toString()
 
-        val firstName = etFirstName.text.toString()
-        val lastName = etLastName.text.toString()
-        val userName = etUserName.text.toString()
-        val email = etEmail.text.toString()
-        val password = etPassword.text.toString()
-        val phoneNumber = etPhoneNumber.text.toString()
-
-        remoteService.registerUser(firstName, lastName,phoneNumber, email, userName, password)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object: Observer<Customer>{
-                override fun onComplete() {
-
-                }
-
-                override fun onSubscribe(d: Disposable) {
-
-                }
-
-                override fun onNext(t: Customer) {
-                    Toast.makeText(this@RegisterActivity, t.message, Toast.LENGTH_SHORT).show()
-                    if (t.message == "Registration success"){
-                        finish()
-                        //SharedPreferencesManager.getInstance(this@RegisterActivity).onLogin(t)
-                        prefsManager.onLogin(t)
-                        startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-
-                }
-            })
+                presenter.initiateRegister(firstName, lastName,phoneNumber, email, userName, password)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =

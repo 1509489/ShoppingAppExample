@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 
 import com.pixelart.shoppingappexample.R
@@ -29,8 +28,6 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
 
         adapter = HomeRVAdapter(this)
         product = ArrayList()
-
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,8 +38,8 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
         else hideLoadingIndicator(rootView.pbHome)
 
         val spanCount = Utils.getNumberOfColumns(activity?.applicationContext!!)
-        val spacingInpixel = 2
-        val gridDecoration = Utils.GridItemDecorator(spacingInpixel, spanCount, true)
+        val spacingInPixel = 2
+        val gridDecoration = Utils.GridItemDecorator(spacingInPixel, spanCount, true)
 
         val layoutManager = GridLayoutManager(activity, spanCount)
 

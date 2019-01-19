@@ -21,6 +21,7 @@ class HomePresenter(private val view: HomeContract.View):
             .subscribe(object : SingleObserver<FeaturedProducts> {
                 override fun onSuccess(t: FeaturedProducts) {
                     view.showFeaturedProducts(t.products)
+                    isLoaded = false
                 }
 
                 override fun onSubscribe(d: Disposable) {
@@ -29,6 +30,7 @@ class HomePresenter(private val view: HomeContract.View):
 
                 override fun onError(e: Throwable) {
                     view.showError("Error ${e.message}")
+                    isLoaded =false
                     e.printStackTrace()
                 }
             })

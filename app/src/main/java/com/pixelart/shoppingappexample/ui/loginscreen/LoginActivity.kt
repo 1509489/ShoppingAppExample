@@ -12,62 +12,60 @@ import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
 import com.pixelart.shoppingappexample.ui.MainActivity
 import com.pixelart.shoppingappexample.ui.registerscreen.RegisterActivity
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : AppCompatActivity(){
+class LoginActivity : AppCompatActivity(), LoginContract.View{
     private lateinit var remoteService: RemoteService
+    private lateinit var presenter: LoginPresenter
     private val prefsManager = PrefsManager.INSTANCE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        prefsManager.setContext(this)
+        remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
+        presenter = LoginPresenter(remoteService,this)
+        prefsManager.setContext(this.application)
 
         if (prefsManager.isLoggedIn()){
             finish()
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        remoteService = RemoteHelper.retrofitClient().create(RemoteService::class.java)
         tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
+    override fun showHideLoadingIndicator(isLoading: Boolean) {
+
+    }
+
+    override fun onLoginSuccess(customer: Customer) {
+        if (customer.message == "Login successful"){
+            finish()
+            prefsManager.onLogin(customer)
+            //SharedPreferencesManager.getInstance(this@LoginActivity).onLogin(t)
+            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+        }
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+    }
+
     fun onClick(v: View) {
-        val userName = etUsername.text.toString()
-        val password = etPass.text.toString()
+        when(v.id) {
+            R.id.btnLogin ->{
+                val userName = etUsername.text.toString()
+                val password = etPass.text.toString()
 
-        remoteService.login(userName, password)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object: Observer<Customer> {
-                override fun onComplete() {
-
-                }
-
-                override fun onSubscribe(d: Disposable) {
-
-                }
-
-                override fun onNext(t: Customer) {
-                    if (t.message == "Login successful"){
-                        finish()
-                        prefsManager.onLogin(t)
-                        //SharedPreferencesManager.getInstance(this@LoginActivity).onLogin(t)
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    }
-
-                }
-
-                override fun onError(e: Throwable) {
-                    Toast.makeText(this@LoginActivity, e.message, Toast.LENGTH_SHORT).show()
-                }
-            })
+                presenter.initiateLogIn(userName, password)
+            }
+        }
     }
 }

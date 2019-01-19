@@ -1,10 +1,11 @@
 package com.pixelart.shoppingappexample.common
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.pixelart.shoppingappexample.model.Customer
 
-enum class PrefsManager constructor(private var context: Context){
+enum class PrefsManager constructor(private var context: Application){
     INSTANCE;
 
     private constructor()
@@ -49,7 +50,7 @@ enum class PrefsManager constructor(private var context: Context){
         return true
     }
 
-    fun setContext(ctx: Context){
+    fun setContext(ctx: Application){
         context = ctx
     }
 }
