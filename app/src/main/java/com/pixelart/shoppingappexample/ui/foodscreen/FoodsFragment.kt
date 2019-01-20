@@ -75,4 +75,8 @@ class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,
     override fun onItemClicked(position: Int) {
         Toast.makeText(activity, foods[position].name, Toast.LENGTH_LONG ).show()
     }
+
+    override fun onAddToCart(position: Int) {
+        Toast.makeText(activity, "Cart button clicked at position: $position", Toast.LENGTH_LONG).show()
+    }
 }

@@ -26,7 +26,9 @@ class FoodListAdpater(private val listener: OnItemClickedListener): ListAdapter<
 
     override fun onBindViewHolder(holder: FoodListAdpater.ViewHolder, position: Int) {
         val product = getItem(position)
-        holder.apply { setContent(product) }
+        holder.apply { setContent(product)
+            btnAddToCart.setOnClickListener { listener.onAddToCart(position) }
+        }
 
         holder.itemView.setOnClickListener { listener.onItemClicked(position) }
     }
@@ -36,7 +38,7 @@ class FoodListAdpater(private val listener: OnItemClickedListener): ListAdapter<
         private val name: TextView = itemView.findViewById(R.id.tvProductName)
         private val description: TextView = itemView.findViewById(R.id.tvProductDesc)
         private val price: TextView = itemView.findViewById(R.id.tvPrice)
-        private val btnAddToCart: ImageButton = itemView.findViewById(R.id.ibAddToCart)
+        val btnAddToCart: ImageButton = itemView.findViewById(R.id.ibAddToCart)
         private val image: ImageView = itemView.findViewById(R.id.ivFoodImage)
 
         fun setContent(product: Product){
@@ -53,6 +55,7 @@ class FoodListAdpater(private val listener: OnItemClickedListener): ListAdapter<
 
     interface OnItemClickedListener{
         fun onItemClicked(position: Int)
+        fun onAddToCart(position: Int)
     }
 
     companion object {
