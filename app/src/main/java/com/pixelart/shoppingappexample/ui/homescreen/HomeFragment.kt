@@ -23,9 +23,9 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
     private lateinit var presenter: HomePresenter
     private lateinit var rootView: View
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun init() {
+        presenter = HomePresenter(this)
+        presenter.getFeaturedProducts()
         adapter = HomeRVAdapter(this)
         product = ArrayList()
     }
@@ -49,17 +49,20 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
         return rootView
     }
 
-    override fun init() {
-        presenter = HomePresenter(this)
-        presenter.getFeaturedProducts()
-    }
-
     override fun getViewPresenter(): HomeContract.Presenter = presenter
 
     override fun showFeaturedProducts(featuredProducts: List<Product>) {
         adapter.submitList(featuredProducts)
         if (presenter.dataLoaded())
             hideLoadingIndicator(rootView.pbHome)
+    }
+
+    override fun showProgress() {
+
+    }
+
+    override fun hideProgress() {
+
     }
 
     override fun onItemClicked(position: Int) {

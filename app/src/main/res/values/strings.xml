@@ -25,4 +25,5 @@
     <string name="foods">Foods</string>
     <string name="drinks">Drinks</string>
     <string name="home">Home</string>
+    <string name="todo">TODO</string>
 </resources>

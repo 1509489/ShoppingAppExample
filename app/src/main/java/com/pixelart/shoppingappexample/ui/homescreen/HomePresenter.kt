@@ -36,5 +36,9 @@ class HomePresenter(private val view: HomeContract.View):
             })
     }
 
+    override fun onDestroy() {
+
+    }
+
     override fun dataLoaded(): Boolean = isLoaded
 }

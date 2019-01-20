@@ -7,4 +7,6 @@ interface BaseView {
     fun showError(error: String)
     fun showLoadingIndicator(loadingIndicator: ProgressBar)
     fun hideLoadingIndicator(loadingIndicator: ProgressBar)
+    fun showProgress()
+    fun hideProgress()
 }

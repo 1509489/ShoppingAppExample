@@ -2,6 +2,8 @@ package com.pixelart.shoppingappexample.remote
 
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.model.FeaturedProducts
+import com.pixelart.shoppingappexample.model.FoodMain
+import com.pixelart.shoppingappexample.model.Product
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -34,4 +36,8 @@ interface RemoteService{
     //Get home screen products request
     @GET("v1/featuredproducts.php")
     fun getFeaturedProducts():Single<FeaturedProducts>
+
+    //Get the products for the food screen
+    @GET("v1/foodmain.php")
+    fun getFoodProducts():Single<FoodMain>
 }

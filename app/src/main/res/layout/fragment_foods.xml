@@ -3,12 +3,17 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:paddingLeft="10dp"
+             android:paddingRight="10dp"
              tools:context=".ui.foodscreen.FoodsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
-
+            tools:listitem="@layout/food_rv_layout" android:id="@+id/rvFoods"/>
+    <ProgressBar
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pbFoods" android:layout_gravity="center"/>
 </FrameLayout>
