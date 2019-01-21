@@ -1,16 +1,13 @@
-package com.pixelart.shoppingappexample.ui.foodscreen
+package com.pixelart.shoppingappexample.ui.detailscreen
 
 import com.pixelart.shoppingappexample.base.BasePresenter
 import com.pixelart.shoppingappexample.base.BaseView
-import com.pixelart.shoppingappexample.model.FoodMain
-import com.pixelart.shoppingappexample.model.Product
 
-interface FoodContract {
+interface DetailContract {
     interface View: BaseView{
-        fun showFoodProducts(foods: FoodMain)
+
     }
     interface Presenter: BasePresenter{
-        fun getFoodProducts()
         fun addToCart( name: String, description: String, quantity: String, price: String,
                        imgUrl: String, customerId: String, productId: String)
     }

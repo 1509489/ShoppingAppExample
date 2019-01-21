@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.adapter.FoodListAdpater
 import com.pixelart.shoppingappexample.base.BaseFragment
+import com.pixelart.shoppingappexample.common.PrefsManager
+import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.model.FoodMain
 import com.pixelart.shoppingappexample.model.Product
 import kotlinx.android.synthetic.main.fragment_foods.*
@@ -28,12 +30,18 @@ class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,
     private lateinit var presenter: FoodPresenter
     private lateinit var adapter: FoodListAdpater
     private lateinit var foods: ArrayList<Product>
+    private lateinit var customer: Customer
+
+    private val prefsManager = PrefsManager.INSTANCE
 
     override fun init() {
         presenter = FoodPresenter(this)
         presenter.getFoodProducts()
         adapter = FoodListAdpater(this)
         foods = ArrayList()
+
+        prefsManager.setContext(activity?.application!!)
+        customer = prefsManager.getCustomer()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,6 +85,8 @@ class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,
     }
 
     override fun onAddToCart(position: Int) {
-        Toast.makeText(activity, "Cart button clicked at position: $position", Toast.LENGTH_LONG).show()
+        val quantity = 1
+        presenter.addToCart(foods[position].name, foods[position].description, "$quantity", foods[position].price,
+            foods[position].imageUrl, "${customer.id}", foods[position].id)
     }
 }

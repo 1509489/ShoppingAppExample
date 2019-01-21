@@ -1,11 +1,9 @@
 package com.pixelart.shoppingappexample.remote
 
-import com.pixelart.shoppingappexample.model.Customer
-import com.pixelart.shoppingappexample.model.FeaturedProducts
-import com.pixelart.shoppingappexample.model.FoodMain
-import com.pixelart.shoppingappexample.model.Product
+import com.pixelart.shoppingappexample.model.*
 import io.reactivex.Observable
 import io.reactivex.Single
+import okhttp3.ResponseBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -40,4 +38,17 @@ interface RemoteService{
     //Get the products for the food screen
     @GET("v1/foodmain.php")
     fun getFoodProducts():Single<FoodMain>
+
+    //Adding item to cart
+    @FormUrlEncoded
+    @POST("v1/cartinsert.php")
+    fun addToCart(
+        @Field("name") name: String,
+        @Field("description") description: String,
+        @Field("quantity") quantity: String,
+        @Field("price") price: String,
+        @Field("img_url") imgUrl: String,
+        @Field("customer") customerId: String,
+        @Field("product_id") productId: String
+    ):Observable<CartItem>
 }

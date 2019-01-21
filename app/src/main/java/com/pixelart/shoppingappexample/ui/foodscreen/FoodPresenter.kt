@@ -23,6 +23,23 @@ class FoodPresenter( private val view: FoodContract.View):
         )
     }
 
+    override fun addToCart(
+        name: String,
+        description: String,
+        quantity: String,
+        price: String,
+        imgUrl: String,
+        customerId: String,
+        productId: String
+    ) {
+        remoteService.addToCart(name, description, quantity, price, imgUrl, customerId, productId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { cartItem -> view.showMessage(cartItem.message) }
+            .doOnError { t -> view.showError(t.message!!) }
+            .subscribe()
+    }
+
     override fun onDestroy() {
         compositeDisposable.size()
     }
