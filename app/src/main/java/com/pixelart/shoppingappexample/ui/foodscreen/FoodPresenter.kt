@@ -35,7 +35,7 @@ class FoodPresenter( private val view: FoodContract.View):
         remoteService.addToCart(name, description, quantity, price, imgUrl, customerId, productId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { cartItem -> view.showMessage(cartItem.message) }
+            .doOnNext { response -> view.showMessage(response.message) }
             .doOnError { t -> view.showError(t.message!!) }
             .subscribe()
     }

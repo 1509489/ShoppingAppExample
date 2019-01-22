@@ -50,5 +50,15 @@ interface RemoteService{
         @Field("img_url") imgUrl: String,
         @Field("customer") customerId: String,
         @Field("product_id") productId: String
-    ):Observable<CartItem>
+    ):Observable<CartResponse>
+
+    //Get cart items for the logged in user
+    @FormUrlEncoded
+    @POST("v1/cartretrieve.php")
+    fun getCartItems(@Field("customer") customerId: String):Observable<CartResponse>
+
+    //Delete item from cart
+    @FormUrlEncoded
+    @POST("v1/cartdelete.php")
+    fun deleteCartItem(@Field("id") itemId: String):Observable<CartResponse>
 }

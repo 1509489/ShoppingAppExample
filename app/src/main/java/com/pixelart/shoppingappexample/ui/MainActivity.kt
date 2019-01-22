@@ -10,6 +10,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.common.PrefsManager
+import com.pixelart.shoppingappexample.ui.cartscreen.CartFragment
 import com.pixelart.shoppingappexample.ui.drinkscreen.DrinksFragment
 import com.pixelart.shoppingappexample.ui.foodscreen.FoodsFragment
 import com.pixelart.shoppingappexample.ui.homescreen.HomeFragment
@@ -80,6 +81,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_cart -> {
+                val cartFragment = CartFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_content, cartFragment, "cart_fragment")
+                    .addToBackStack("cart_fragment")
+                    .commit()
+             true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

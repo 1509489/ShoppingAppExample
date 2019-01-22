@@ -3,8 +3,6 @@ package com.pixelart.shoppingappexample.model
 import com.google.gson.annotations.SerializedName
 
 data class CartItem(
-    val error: Boolean,
-    val message: String,
     val id: String,
     val name: String,
     val description: String,

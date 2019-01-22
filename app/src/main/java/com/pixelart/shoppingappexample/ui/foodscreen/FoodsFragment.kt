@@ -17,14 +17,8 @@ import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.model.FoodMain
 import com.pixelart.shoppingappexample.model.Product
-import kotlinx.android.synthetic.main.fragment_foods.*
 import kotlinx.android.synthetic.main.fragment_foods.view.*
 
-
-/**
- * A simple [Fragment] subclass.
- *
- */
 class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,FoodListAdpater.OnItemClickedListener {
     private lateinit var rootView: View
     private lateinit var presenter: FoodPresenter

@@ -4,5 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CartResponse(
     @SerializedName("cart_items")
-    val cartItems: List<CartItem>
+    val cartItems: List<CartItem>,
+    val error: Boolean,
+    val message: String
 )
