@@ -22,13 +22,15 @@ class CartPresenter(private val view: CartContract.View): CartContract.Presenter
         )
     }
 
-    override fun deleteCartItem(itemId: String) {
-        remoteService.deleteCartItem(itemId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { response -> view.showMessage(response.message)}
-            .doOnError { t -> view.showError(t.message!!) }
-            .subscribe()
+    override fun deleteCartItem(itemId: String, customerId: String) {
+        compositeDisposable.add(
+            remoteService.deleteCartItem(itemId, customerId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { response -> view.showMessage(response.message)}
+                //.doOnError { t -> view.showError(t.message!!) }
+                .subscribe(view::showCartItem, this::handleError)
+        )
     }
 
     override fun onDestroy() {

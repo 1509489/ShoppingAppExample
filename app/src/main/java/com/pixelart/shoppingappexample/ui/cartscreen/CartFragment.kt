@@ -1,6 +1,8 @@
 package com.pixelart.shoppingappexample.ui.cartscreen
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +17,6 @@ import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.CartItem
 import com.pixelart.shoppingappexample.model.CartResponse
 
-import com.pixelart.shoppingappexample.ui.cartscreen.dummy.DummyContent.DummyItem
 
 /**
  * A fragment representing a list of Items.
@@ -29,7 +30,7 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
 
     private lateinit var presenter: CartPresenter
     private lateinit var adapter: CartRecyclerViewAdapter
-    private lateinit var cartItems: CartResponse
+    private var cartItems: ArrayList<CartItem>? = null
 
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -39,8 +40,9 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
 
-        showMessage("${PrefsManager.INSTANCE.getCustomer().id}")
+        //showMessage("${PrefsManager.INSTANCE.getCustomer().id}")
         presenter.getCartItems("${PrefsManager.INSTANCE.getCustomer().id}")
+        cartItems = ArrayList()
         adapter = CartRecyclerViewAdapter(this)
         //cartItems = CartResponse()
     }
@@ -59,20 +61,23 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
                 adapter = this@CartFragment.adapter
             }
         }
+        //adapter.submitList(cartItems)
         return view
     }
 
-    /*override fun onAttach(context: Context) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
+        Log.d("Cart", "Fragment attached")
+        /*if (context is OnListFragmentInteractionListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }
-    }*/
+        }*/
+    }
 
     override fun onDetach() {
         super.onDetach()
+        Log.d("Cart", "Fragment Detach")
         listener = null
     }
 
@@ -91,9 +96,11 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
 
     }
 
-    override fun showCartItem(cartResponse: CartResponse) {
-        adapter.submitList(cartResponse.cartItems)
-        cartItems = cartResponse//(cartResponse.cartItems as ArrayList<CartItem>)
+    override fun showCartItem(cartResponse: CartResponse?) {
+        adapter.submitList(cartResponse?.cartItems)
+
+        adapter.notifyDataSetChanged()
+        cartItems = (cartResponse?.cartItems as ArrayList<CartItem>)
     }
 
     override fun onItemClicked(position: Int) {
@@ -101,21 +108,15 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
     }
 
     override fun onDeleteCartItem(position: Int) {
-        presenter.deleteCartItem(cartItems.cartItems[position].id)
-
+        presenter.deleteCartItem(cartItems!![position].id, "${PrefsManager.INSTANCE.getCustomer().id}")
+        cartItems?.removeAt(position)//Remove list item to match the size in the database
         adapter.notifyItemRemoved(position)
-        presenter.getCartItems("${PrefsManager.INSTANCE.getCustomer().id}")
-        showCartItem(cartItems)
-        //adapter.submitList(cartItems.cartItems)
-        //adapter.notifyDataSetChanged()
-        adapter.notifyItemRangeChanged(position, adapter.itemCount)
-        //adapter.notifyItemRemoved(position)
 
+        Log.d("Cart", "Item Size: ${cartItems?.size}, Adapter count: ${adapter.itemCount}, Position Removed: $position")
     }
 
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: CartItem)
     }
 
     companion object {

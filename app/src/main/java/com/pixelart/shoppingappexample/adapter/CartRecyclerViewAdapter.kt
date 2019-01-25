@@ -15,17 +15,8 @@ import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.common.GlideApp
 import com.pixelart.shoppingappexample.model.CartItem
 
-
-import com.pixelart.shoppingappexample.ui.cartscreen.CartFragment.OnListFragmentInteractionListener
-import com.pixelart.shoppingappexample.ui.cartscreen.dummy.DummyContent.DummyItem
-
 import kotlinx.android.synthetic.main.cart_rv_layout.view.*
 
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
- *
- */
 class CartRecyclerViewAdapter( private val mListener: OnItemClickedListener) :
     ListAdapter<CartItem, CartRecyclerViewAdapter.ViewHolder>(DIFF_CALLBACK) {
 

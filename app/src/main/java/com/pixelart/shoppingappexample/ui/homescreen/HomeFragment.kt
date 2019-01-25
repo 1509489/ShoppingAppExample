@@ -13,6 +13,7 @@ import com.pixelart.shoppingappexample.adapter.HomeRVAdapter
 import com.pixelart.shoppingappexample.base.BaseFragment
 import com.pixelart.shoppingappexample.common.Utils
 import com.pixelart.shoppingappexample.model.Product
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnItemClickedListener,
@@ -33,9 +34,15 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_home, container, false)
-
+/*
         if (!presenter.dataLoaded()) showLoadingIndicator(rootView.pbHome)
-        else hideLoadingIndicator(rootView.pbHome)
+        else hideLoadingIndicator(rootView.pbHome)*/
+        return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        rootView.pbHome.visibility = View.GONE
 
         val spanCount = Utils.getNumberOfColumns(activity?.applicationContext!!)
         val spacingInPixel = 2
@@ -46,7 +53,6 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
         rootView.rvHome.layoutManager = layoutManager
         rootView.rvHome.addItemDecoration(gridDecoration)
         rootView.rvHome.adapter = adapter
-        return rootView
     }
 
     override fun getViewPresenter(): HomeContract.Presenter = presenter
