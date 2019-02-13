@@ -11,5 +11,6 @@ interface CartContract {
     interface Presenter: BasePresenter{
         fun getCartItems(customerId: String)
         fun deleteCartItem(itemId: String, customerId: String)
+        fun setQuantity(quantity: String, customerId: String, productId: String)
     }
 }

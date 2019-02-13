@@ -1,8 +1,11 @@
 package com.pixelart.shoppingappexample.ui.cartscreen
 
 import androidx.annotation.NonNull
+import com.pixelart.shoppingappexample.model.CartResponse
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -33,6 +36,17 @@ class CartPresenter(private val view: CartContract.View): CartContract.Presenter
         )
     }
 
+    override fun setQuantity(quantity: String, customerId: String, productId: String) {
+        compositeDisposable.add(
+            remoteService.setQuantity(quantity, customerId, productId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                /*.doOnNext { response -> view.showMessage(response.message) }
+                .doOnError { t -> view.showError(t.message!!) }*/
+                .subscribe(this::handleQuantitySuccess, this::handleError)
+        )
+    }
+
     override fun onDestroy() {
         compositeDisposable.clear()
     }
@@ -42,5 +56,9 @@ class CartPresenter(private val view: CartContract.View): CartContract.Presenter
             view.showError(t.message!!)
             t.printStackTrace()
         }
+    }
+
+    private fun handleQuantitySuccess(response: CartResponse){
+        view.showMessage(response.message)
     }
 }

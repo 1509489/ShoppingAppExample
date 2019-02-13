@@ -63,4 +63,12 @@ interface RemoteService{
     fun deleteCartItem(@Field("id") itemId: String,
                        @Field("customer") customerId: String
     ):Observable<CartResponse>
+
+    //Set cart item quantity
+    @FormUrlEncoded
+    @POST("v1/setquantity.php")
+    fun setQuantity(@Field("quantity") quantity: String,
+                    @Field("customer") customerId: String,
+                    @Field("product_id") productId: String
+    ):Observable<CartResponse>
 }
