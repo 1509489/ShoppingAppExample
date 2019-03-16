@@ -41,7 +41,7 @@ class FoodPresenter( private val view: FoodContract.View):
     }
 
     override fun onDestroy() {
-        compositeDisposable.size()
+        compositeDisposable.clear()
     }
 
     private fun handleError(@NonNull t: Throwable){

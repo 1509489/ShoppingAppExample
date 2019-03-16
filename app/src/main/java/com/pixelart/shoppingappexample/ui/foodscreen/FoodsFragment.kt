@@ -2,11 +2,9 @@ package com.pixelart.shoppingappexample.ui.foodscreen
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -14,9 +12,11 @@ import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.adapter.FoodListAdpater
 import com.pixelart.shoppingappexample.base.BaseFragment
 import com.pixelart.shoppingappexample.common.PrefsManager
+import com.pixelart.shoppingappexample.common.RxBus
 import com.pixelart.shoppingappexample.model.Customer
 import com.pixelart.shoppingappexample.model.FoodMain
 import com.pixelart.shoppingappexample.model.Product
+import com.pixelart.shoppingappexample.ui.detailscreen.DetailFragment
 import kotlinx.android.synthetic.main.fragment_foods.view.*
 
 class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,FoodListAdpater.OnItemClickedListener {
@@ -75,7 +75,11 @@ class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,
     }
 
     override fun onItemClicked(position: Int) {
-        Toast.makeText(activity, foods[position].name, Toast.LENGTH_LONG ).show()
+        RxBus.INSTANCE.post(foods[position])
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.home_content, DetailFragment())
+            ?.addToBackStack("foods_fragment")
+            ?.commit()
     }
 
     override fun onAddToCart(position: Int) {
