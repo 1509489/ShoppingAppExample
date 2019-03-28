@@ -16,15 +16,12 @@ import com.pixelart.shoppingappexample.base.BaseFragment
 import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.CartItem
 import com.pixelart.shoppingappexample.model.CartResponse
+import com.pixelart.shoppingappexample.model.DefaultResponse
+import com.pixelart.shoppingappexample.model.OrderResponse
 import kotlinx.android.synthetic.main.cart_rv_layout.view.*
 import kotlinx.android.synthetic.main.fragment_cart.view.*
+import java.util.*
 
-
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [CartFragment.OnListFragmentInteractionListener] interface.
- */
 class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, CartRecyclerViewAdapter.OnItemClickedListener {
 
     // TODO: Customize parameters
@@ -35,17 +32,11 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
     private lateinit var rootView: View
     private var cartItems: ArrayList<CartItem>? = null
 
-    private var listener: OnListFragmentInteractionListener? = null
-
     override fun init() {
         val actionBar = activity?.actionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setDisplayShowHomeEnabled(true)
         presenter = CartPresenter(this)
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-
         //showMessage("${PrefsManager.INSTANCE.getCustomer().id}")
         presenter.getCartItems("${PrefsManager.INSTANCE.getCustomer().id}")
         cartItems = ArrayList()
@@ -53,6 +44,7 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
         //cartItems = CartResponse()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_cart, container, false)
 
@@ -66,29 +58,25 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
             adapter = this@CartFragment.adapter
         }
 
+        rootView.titleSubtotal.text = "${activity?.resources?.getString(R.string.basket_subtotal)} (${totalItems()} items):"
+        rootView.tvSubtotal.text = totalPrice().toString()
+
         rootView.btnCheckout.setOnClickListener {
-            /*activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(R.id.home_content, CartFragment())
-                ?.addToBackStack(null)
-                ?.commit()*/
+            val customerId = PrefsManager.INSTANCE.getCustomer().id
+            presenter.addOrder(customerId.toString(), totalPrice().toString(), totalItems().toString())
         }
+
         return rootView
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         Log.d("Cart", "Fragment attached")
-        /*if (context is OnListFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }*/
     }
 
     override fun onDetach() {
         super.onDetach()
         Log.d("Cart", "Fragment Detach")
-        listener = null
     }
 
     override fun onDestroy() {
@@ -110,9 +98,12 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
     override fun showCartItem(cartResponse: CartResponse?) {
         adapter.submitList(cartResponse?.cartItems)
 
+        if (cartResponse != null)
+            cartItems = (cartResponse.cartItems as ArrayList<CartItem>)
+
         var totalItems = 0
         var pricesSum = 0.0
-        for (i in 0 until cartResponse?.cartItems!!.size){
+        for (i in 0 until cartResponse?.cartItems?.size!!){
             val item = cartResponse.cartItems[i]
 
             totalItems += item.quantity.toInt()
@@ -126,12 +117,10 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
 
         val totalPrice = String.format("%.2f",pricesSum)
 
-
         rootView.titleSubtotal.text = "${activity?.resources?.getString(R.string.basket_subtotal)} ($totalItems items):"
         rootView.tvSubtotal.text = totalPrice
 
         adapter.notifyDataSetChanged()
-        cartItems = (cartResponse.cartItems as ArrayList<CartItem>)
     }
 
     override fun onItemClicked(position: Int) {
@@ -140,8 +129,15 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
 
     override fun onDeleteCartItem(position: Int) {
         presenter.deleteCartItem(cartItems!![position].id, "${PrefsManager.INSTANCE.getCustomer().id}")
-        cartItems?.removeAt(position)//Remove list item to match the size in the database
-        adapter.notifyItemRemoved(position)
+        //cartItems?.removeAt(position)//Remove list item to match the size in the database
+        fragmentManager?.popBackStackImmediate("cart_fragment", 0)
+        fragmentManager?.beginTransaction()
+            ?.replace(R.id.home_content, CartFragment())
+            ?.addToBackStack("cart_fragment")
+            ?.commit()
+
+        //adapter.notifyDataSetChanged()
+
 
         Log.d("Cart", "Item Size: ${cartItems?.size}, Adapter count: ${adapter.itemCount}, Position Removed: $position")
     }
@@ -174,29 +170,66 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
             }
         }
         val totalPrice = String.format("%.2f",pricesSum)
+
         rootView.titleSubtotal.text = "${activity?.resources?.getString(R.string.basket_subtotal)} ($totalItems items):"
         rootView.tvSubtotal.text = totalPrice
 
     }
 
+    private fun totalPrice():Double{
+        var pricesSum = 0.0
 
+        for (i in 0 until adapter.itemCount) {
+            val item = cartItems!![i]
+            val quantity = rootView.rvCart.findViewHolderForAdapterPosition(i)
+                ?.itemView?.etQuantity?.text.toString()
 
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: CartItem)
+            val price = rootView.rvCart.findViewHolderForAdapterPosition(i)
+                ?.itemView?.tvPrice?.text.toString()
+
+            pricesSum += if (quantity.toInt() > 1){
+                price.toDouble() * quantity.toInt()
+            }else{
+                item.price.toDouble()
+            }
+        }
+
+        return String.format("%.2f",pricesSum).toDouble()
     }
 
-    companion object {
+    private fun totalItems():Int{
 
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
+        var totalItems = 0
+        for (i in 0 until adapter.itemCount) {
+            val quantity = rootView.rvCart.findViewHolderForAdapterPosition(i)
+                ?.itemView?.etQuantity?.text.toString()
 
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            CartFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
+            totalItems += quantity.toInt()
+        }
+
+        return totalItems
+    }
+
+    override fun getOrderNumber(orderResponse: OrderResponse) {
+        if (!orderResponse.error){
+            for (i in 0 until cartItems?.size!!){
+                presenter.addOrderDetails(
+                    orderResponse.orderNumber,
+                    cartItems!![i].name,
+                    cartItems!![i].description,
+                    cartItems!![i].quantity,
+                    cartItems!![i].price,
+                    cartItems!![i].imageUrl
+                )
             }
+            for (i in 0 until cartItems?.size!!){
+                presenter.deleteCartItem(cartItems!![i].id, PrefsManager.INSTANCE.getCustomer().id.toString())
+            }
+
+            fragmentManager?.beginTransaction()
+                ?.detach(CartFragment())
+                ?.attach(CartFragment())
+                ?.commit()
+        }
     }
 }

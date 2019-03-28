@@ -61,7 +61,7 @@ interface RemoteService{
     @POST("v1/cartdelete.php")
     fun deleteCartItem(@Field("id") itemId: String,
                        @Field("customer") customerId: String
-    ):Observable<CartResponse>
+    ):Observable<DefaultResponse>
 
     //Set cart item quantity
     @FormUrlEncoded
@@ -70,4 +70,25 @@ interface RemoteService{
                     @Field("customer") customerId: String,
                     @Field("product_id") productId: String
     ):Observable<CartResponse>
+
+    //Add order
+    @FormUrlEncoded
+    @POST("v1/orderinsert.php")
+    fun addOrder(
+        @Field("customer_id")customerId: String,
+        @Field("total_price")totalPrice: String,
+        @Field("total_items")totalItems: String
+    ):Observable<OrderResponse>
+
+    //Add order details
+    @FormUrlEncoded
+    @POST("v1/orderdetailinsert.php")
+    fun addOrderDetails(
+        @Field("order_number")orderNumber: String,
+        @Field("name") name: String,
+        @Field("description") description: String,
+        @Field("quantity") quantity: String,
+        @Field("total_price") totalPrice: String,
+        @Field("img_url") imgUrl: String
+    ):Observable<DefaultResponse>
 }

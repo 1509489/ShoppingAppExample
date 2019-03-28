@@ -26,6 +26,7 @@ class HomeFragment : BaseFragment<HomeContract.Presenter>(), HomeRVAdapter.OnIte
     private lateinit var rootView: View
 
     override fun init() {
+        activity?.title = "Home"
         presenter = HomePresenter(this)
         presenter.getFeaturedProducts()
         adapter = HomeRVAdapter(this)

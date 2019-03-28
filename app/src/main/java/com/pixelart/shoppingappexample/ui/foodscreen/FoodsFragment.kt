@@ -29,6 +29,7 @@ class FoodsFragment : BaseFragment<FoodContract.Presenter>(), FoodContract.View,
     private val prefsManager = PrefsManager.INSTANCE
 
     override fun init() {
+        activity?.title = "Foods"
         presenter = FoodPresenter(this)
         presenter.getFoodProducts()
         adapter = FoodListAdpater(this)

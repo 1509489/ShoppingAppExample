@@ -106,6 +106,7 @@ class DetailFragment : BaseFragment<DetailContract.Presenter>(), DetailContract.
     }
 
     override fun showDetails(product: Product) {
+        activity?.title = product.name
         this.product = product
     }
 

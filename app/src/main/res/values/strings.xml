@@ -9,6 +9,7 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="title_activity_home">Home</string>
+    <string name="title_activity_cart">Cart</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

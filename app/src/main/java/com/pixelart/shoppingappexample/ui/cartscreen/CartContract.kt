@@ -3,14 +3,20 @@ package com.pixelart.shoppingappexample.ui.cartscreen
 import com.pixelart.shoppingappexample.base.BasePresenter
 import com.pixelart.shoppingappexample.base.BaseView
 import com.pixelart.shoppingappexample.model.CartResponse
+import com.pixelart.shoppingappexample.model.OrderResponse
 
 interface CartContract {
-    interface View: BaseView{
+    interface View : BaseView {
         fun showCartItem(cartResponse: CartResponse?)
+        fun getOrderNumber(orderResponse: OrderResponse)
     }
-    interface Presenter: BasePresenter{
+
+    interface Presenter : BasePresenter {
         fun getCartItems(customerId: String)
         fun deleteCartItem(itemId: String, customerId: String)
         fun setQuantity(quantity: String, customerId: String, productId: String)
+        fun addOrder(customerId: String, totalPrice: String, totalItems: String)
+        fun addOrderDetails(orderNumber: String, name: String, description: String,
+                            quantity: String, totalPrice: String, imgUrl: String)
     }
 }

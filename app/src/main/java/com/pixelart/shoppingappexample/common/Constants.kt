@@ -1,6 +1,7 @@
 package com.pixelart.shoppingappexample.common
 
-const val BASE_URL = "http://10.0.3.2:80/simpleapi/"
+//const val BASE_URL = "http://10.0.3.2:80/simpleapi/"//genymotion
+const val BASE_URL = "http://10.0.2.2:80/simpleapi/"//Android emulator
 //const val BASE_URL = "http://10.0.3.2:8080/simpleapi/"//for Desktop dev
 //const val BASE_URL = "http://10.0.3.2:8080/shopingappexample/"
 //const val BASE_URL = "http://popystone.000webhostapp.com/simpleapi/"//Web hosting
