@@ -47,14 +47,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.pixelart.shoppingappexample.ui.MainActivity" />
         </activity>
-
-        <activity
-                android:name=".ui.orderscreen.OrderActivity"
-        >
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.pixelart.shoppingappexample.ui.MainActivity" />
-        </activity>
     </application>
 
 </manifest>

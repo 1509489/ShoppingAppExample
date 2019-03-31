@@ -16,8 +16,7 @@ import com.pixelart.shoppingappexample.base.BaseFragment
 import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.CartItem
 import com.pixelart.shoppingappexample.model.CartResponse
-import com.pixelart.shoppingappexample.model.DefaultResponse
-import com.pixelart.shoppingappexample.model.OrderResponse
+import com.pixelart.shoppingappexample.model.OrderNumberResponse
 import kotlinx.android.synthetic.main.cart_rv_layout.view.*
 import kotlinx.android.synthetic.main.fragment_cart.view.*
 import java.util.*
@@ -210,7 +209,7 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
         return totalItems
     }
 
-    override fun getOrderNumber(orderResponse: OrderResponse) {
+    override fun getOrderNumber(orderResponse: OrderNumberResponse) {
         if (!orderResponse.error){
             for (i in 0 until cartItems?.size!!){
                 presenter.addOrderDetails(

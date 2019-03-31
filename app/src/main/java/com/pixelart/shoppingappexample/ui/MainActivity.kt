@@ -16,7 +16,7 @@ import com.pixelart.shoppingappexample.ui.drinkscreen.DrinksFragment
 import com.pixelart.shoppingappexample.ui.foodscreen.FoodsFragment
 import com.pixelart.shoppingappexample.ui.homescreen.HomeFragment
 import com.pixelart.shoppingappexample.ui.loginscreen.LoginActivity
-import com.pixelart.shoppingappexample.ui.orderscreen.OrderActivity
+import com.pixelart.shoppingappexample.ui.orderscreen.OrdersFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_home.view.*
@@ -154,7 +154,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_orders -> {
-                startActivity(Intent(this, OrderActivity::class.java))
+                //startActivity(Intent(this, OrderActivity::class.java))
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.home_content, OrdersFragment(), "orders_fragment")
+                    .addToBackStack("orders_fragment")
+                    .commit()
             }
             R.id.nav__accountSettings -> {
 

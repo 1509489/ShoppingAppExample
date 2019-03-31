@@ -13,7 +13,7 @@ import com.pixelart.shoppingappexample.adapter.CartRecyclerViewAdapter
 import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.CartItem
 import com.pixelart.shoppingappexample.model.CartResponse
-import com.pixelart.shoppingappexample.model.OrderResponse
+import com.pixelart.shoppingappexample.model.OrderNumberResponse
 import kotlinx.android.synthetic.main.activity_cart.*
 import kotlinx.android.synthetic.main.cart_rv_layout.view.*
 import java.util.ArrayList
@@ -90,7 +90,7 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
         adapter.notifyDataSetChanged()
     }
 
-    override fun getOrderNumber(orderResponse: OrderResponse) {
+    override fun getOrderNumber(orderResponse: OrderNumberResponse) {
         if (!orderResponse.error){
             for (i in 0 until cartItems?.size!!){
                 presenter.addOrderDetails(

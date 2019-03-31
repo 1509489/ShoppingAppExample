@@ -3,12 +3,12 @@ package com.pixelart.shoppingappexample.ui.cartscreen
 import com.pixelart.shoppingappexample.base.BasePresenter
 import com.pixelart.shoppingappexample.base.BaseView
 import com.pixelart.shoppingappexample.model.CartResponse
-import com.pixelart.shoppingappexample.model.OrderResponse
+import com.pixelart.shoppingappexample.model.OrderNumberResponse
 
 interface CartContract {
     interface View : BaseView {
         fun showCartItem(cartResponse: CartResponse?)
-        fun getOrderNumber(orderResponse: OrderResponse)
+        fun getOrderNumber(orderResponse: OrderNumberResponse)
     }
 
     interface Presenter : BasePresenter {

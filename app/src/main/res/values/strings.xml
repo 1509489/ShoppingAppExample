@@ -28,6 +28,7 @@
     <string name="home">Home</string>
     <string name="todo">TODO</string>
     <string name="basket_subtotal">Basket Subtotal</string>
+    <string name="items">Items</string>
     <string name="proceed_to_checkout">Proceed to Checkout</string>
 
     <string-array name="qunatity">

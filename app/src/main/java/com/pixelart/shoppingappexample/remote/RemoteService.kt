@@ -78,7 +78,7 @@ interface RemoteService{
         @Field("customer_id")customerId: String,
         @Field("total_price")totalPrice: String,
         @Field("total_items")totalItems: String
-    ):Observable<OrderResponse>
+    ):Observable<OrderNumberResponse>
 
     //Add order details
     @FormUrlEncoded
@@ -88,7 +88,17 @@ interface RemoteService{
         @Field("name") name: String,
         @Field("description") description: String,
         @Field("quantity") quantity: String,
-        @Field("total_price") totalPrice: String,
+        @Field("price") price: String,
         @Field("img_url") imgUrl: String
     ):Observable<DefaultResponse>
+    
+    //Get orders for customer
+    @FormUrlEncoded
+    @POST("v1/ordersretrieve.php")
+    fun getOrders(@Field("customer_id") customerId: String):Observable<OrdersResponse>
+    
+    //Get Order details
+    @FormUrlEncoded
+    @POST("v1/orderdetailsretrieve.php")
+    fun getOrderDetails(@Field("order_number") orderNumber: String):Observable<OrderDetailResponse>
 }
