@@ -3,6 +3,7 @@ package com.pixelart.shoppingappexample.remote
 import com.pixelart.shoppingappexample.model.*
 import io.reactivex.Observable
 import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -101,4 +102,14 @@ interface RemoteService{
     @FormUrlEncoded
     @POST("v1/orderdetailsretrieve.php")
     fun getOrderDetails(@Field("order_number") orderNumber: String):Observable<OrderDetailResponse>
+
+    @GET("braintree/main.php")
+    fun getBraintreeToken(): Single<Response<String>>
+
+    @FormUrlEncoded
+    @POST("braintree/checkout.php")
+    fun checkout(
+        @Field("nounce") nounce: String,
+        @Field("amount") amount: String
+    ): Observable<String>
 }

@@ -4,9 +4,12 @@ import androidx.annotation.NonNull
 import com.pixelart.shoppingappexample.model.CartResponse
 import com.pixelart.shoppingappexample.remote.RemoteHelper
 import com.pixelart.shoppingappexample.remote.RemoteService
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 
 class CartPresenter(private val view: CartContract.View): CartContract.Presenter {
 
@@ -65,13 +68,44 @@ class CartPresenter(private val view: CartContract.View): CartContract.Presenter
         )
     }
 
+    override fun getBraintreeToken() {
+        /*compositeDisposable.add(
+
+        )*/
+        remoteService.getBraintreeToken()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : SingleObserver<Response<String>>{
+                override fun onSuccess(t: Response<String>) {
+                    t.body()?.let { view.getBraintreeToken(it) }
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onError(e: Throwable) {
+                    handleError(e)
+                }
+            })
+    }
+
+    override fun checkout(nounce: String, amount: String) {
+        compositeDisposable.add(
+            remoteService.checkout(nounce, amount)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        )
+
+    }
+
     override fun onDestroy() {
         compositeDisposable.clear()
     }
 
     private fun handleError(@NonNull t: Throwable){
         if (t.message !=null){
-            view.showError(t.message!!)
+            //view.showError(t.message!!)
             t.printStackTrace()
         }
     }

@@ -1,15 +1,21 @@
 package com.pixelart.shoppingappexample.ui.cartscreen
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.braintreepayments.api.dropin.DropInRequest
+import com.braintreepayments.api.dropin.DropInResult
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.adapter.CartRecyclerViewAdapter
+import com.pixelart.shoppingappexample.common.PAYMENT_REQUEST_CODE
 import com.pixelart.shoppingappexample.common.PrefsManager
 import com.pixelart.shoppingappexample.model.CartItem
 import com.pixelart.shoppingappexample.model.CartResponse
@@ -26,6 +32,9 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
     private lateinit var adapter: CartRecyclerViewAdapter
     private var cartItems: ArrayList<CartItem>? = null
 
+    private var token: String = ""
+    private var paymentAmount = ""
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +43,7 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
 
         presenter = CartPresenter(this)
         presenter.getCartItems("${PrefsManager.INSTANCE.getCustomer().id}")
+        presenter.getBraintreeToken()
         cartItems = ArrayList()
         adapter = CartRecyclerViewAdapter(this)
 
@@ -51,8 +61,31 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
         tvSubtotal.text = totalPrice().toString()
 
         btnCheckout.setOnClickListener {
-            val customerId = PrefsManager.INSTANCE.getCustomer().id
-            presenter.addOrder(customerId.toString(), totalPrice().toString(), totalItems().toString())
+            val dropInRequest = DropInRequest().clientToken(token)
+            startActivityForResult(dropInRequest.getIntent(this), PAYMENT_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PAYMENT_REQUEST_CODE){
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val dropInResult: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
+                    val paymentMethodNonce = dropInResult?.paymentMethodNonce
+
+                    presenter.checkout(paymentMethodNonce?.nonce!!, paymentAmount)
+                    Log.d("NONCE", paymentMethodNonce.nonce)
+
+                    val customerId = PrefsManager.INSTANCE.getCustomer().id
+                    presenter.addOrder(customerId.toString(), totalPrice().toString(), totalItems().toString())
+                }
+                Activity.RESULT_CANCELED -> Toast.makeText(this, "Payment Canceled", Toast.LENGTH_SHORT).show()
+                else -> {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -83,6 +116,7 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
         }
 
         val totalPrice = String.format("%.2f",pricesSum)
+        paymentAmount = totalPrice
 
         titleSubtotal.text = "${resources?.getString(R.string.basket_subtotal)} ($totalItems items):"
         tvSubtotal.text = totalPrice
@@ -193,5 +227,9 @@ class CartActivity : AppCompatActivity(),CartContract.View, CartRecyclerViewAdap
         }
 
         return totalItems
+    }
+
+    override fun getBraintreeToken(token: String) {
+        this.token = token
     }
 }

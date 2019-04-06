@@ -18,3 +18,8 @@ const val KEY_FIRST_NAME = "firstname"
 const val KEY_LAST_NAME = "lastname"
 const val KEY_PHONE_NUMBER = "phonenumber"
 const val KEY_EMAIL = "email"
+
+/**
+ * Brain tree payment
+ * */
+const val PAYMENT_REQUEST_CODE = 7777

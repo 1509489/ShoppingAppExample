@@ -9,6 +9,7 @@ interface CartContract {
     interface View : BaseView {
         fun showCartItem(cartResponse: CartResponse?)
         fun getOrderNumber(orderResponse: OrderNumberResponse)
+        fun getBraintreeToken(token: String)
     }
 
     interface Presenter : BasePresenter {
@@ -18,5 +19,7 @@ interface CartContract {
         fun addOrder(customerId: String, totalPrice: String, totalItems: String)
         fun addOrderDetails(orderNumber: String, name: String, description: String,
                             quantity: String, totalPrice: String, imgUrl: String)
+        fun getBraintreeToken()
+        fun checkout(nounce: String, amount: String)
     }
 }

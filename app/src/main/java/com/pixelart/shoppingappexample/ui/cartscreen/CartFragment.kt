@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.pixelart.shoppingappexample.R
 import com.pixelart.shoppingappexample.adapter.CartRecyclerViewAdapter
@@ -38,6 +39,7 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
         presenter = CartPresenter(this)
         //showMessage("${PrefsManager.INSTANCE.getCustomer().id}")
         presenter.getCartItems("${PrefsManager.INSTANCE.getCustomer().id}")
+        presenter.getBraintreeToken()
         cartItems = ArrayList()
         adapter = CartRecyclerViewAdapter(this)
         //cartItems = CartResponse()
@@ -230,5 +232,9 @@ class CartFragment : BaseFragment<CartContract.Presenter>(), CartContract.View, 
                 ?.attach(CartFragment())
                 ?.commit()
         }
+    }
+
+    override fun getBraintreeToken(token: String) {
+        Toast.makeText(activity, "Braintree Token: $token", Toast.LENGTH_SHORT).show()
     }
 }
